@@ -1,7 +1,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-from bot.utils.additional_functions import enshure_dir
+from utils.additional_functions import enshure_dir
 
 
 def get_logger(
