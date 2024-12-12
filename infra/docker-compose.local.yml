@@ -1,0 +1,12 @@
+version: "3.9"
+
+volumes:
+  pg_data:
+  static:
+  media:
+
+services:
+  app:
+    container_name: mpu_final
+    build: ../app/
+    env_file: ../.env
