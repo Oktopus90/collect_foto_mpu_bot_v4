@@ -1,2 +1,2 @@
-from datebase.models import user #noqa 
-from datebase.core.db import Base  # noqa
+#from models import user  # noqa
+from .db import Base  # noqa

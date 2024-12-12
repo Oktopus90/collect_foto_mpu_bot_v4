@@ -1,12 +1,9 @@
-from contextlib import asynccontextmanager
-from typing import AsyncGenerator
 from uuid import uuid4
 
 from dotenv import load_dotenv
-from sqlalchemy import Column
+from sqlalchemy import Column, create_engine
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID  # noqa
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
+from sqlalchemy.orm import declarative_base, declared_attr
 
 load_dotenv()
 
@@ -33,19 +30,4 @@ class PreBase:
 
 Base = declarative_base(cls=PreBase)
 
-engine = create_async_engine("sqlite:///mpu_foto.db")
-
-AsyncSessionLocal = sessionmaker(engine, class_=AsyncSession)
-
-
-@asynccontextmanager
-async def get_async_session() -> AsyncGenerator:
-    """Функция get_async_session возвращает асинхронный генератор.
-
-    Который предоставляет доступ к асинхронной сессии.
-    Возвращаемое значение:
-    - AsyncGenerator: асинхронный генератор, который предоставляет доступ
-    к асинхронной сессии.
-    """
-    async with AsyncSessionLocal() as async_session:
-        yield async_session
+engine = create_engine("sqlite:///mpu_foto.db")

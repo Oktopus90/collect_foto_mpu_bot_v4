@@ -1,4 +1,4 @@
-from datebase.models.base import AbstractModelForTime
+from models.base import AbstractModelForTime
 from sqlalchemy import BigInteger, Column, String
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID  # noqa
 
