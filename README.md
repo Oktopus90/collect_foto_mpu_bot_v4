@@ -1,0 +1,1 @@
+# collect_foto_mpu_bot_v4
