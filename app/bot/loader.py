@@ -9,3 +9,4 @@ BOT_TOKEN: Optional[str] = os.getenv('BOT_TOKEN')
 if not BOT_TOKEN:
     raise ValueError('BOT_TOKEN is not set')
 bot_instance = AsyncTeleBot(BOT_TOKEN)
+ 
