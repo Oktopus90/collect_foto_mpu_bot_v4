@@ -10,7 +10,6 @@ from typing import Sequence, Union
 from alembic import op
 import sqlalchemy as sa
 
-
 # revision identifiers, used by Alembic.
 revision: str = 'cbf257e25649'
 down_revision: Union[str, None] = 'b99d42e6033f'
@@ -30,7 +29,7 @@ def upgrade() -> None:
     sa.Column('unique_id', sa.UUID(), nullable=False),
     sa.PrimaryKeyConstraint('unique_id'),
     sa.UniqueConstraint('telegram_id'),
-    sa.UniqueConstraint('username')
+    sa.UniqueConstraint('username'),
     )
     # ### end Alembic commands ###
 
