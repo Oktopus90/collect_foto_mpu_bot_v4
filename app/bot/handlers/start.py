@@ -10,6 +10,6 @@ async def handle_start(message: Message) -> None:
     """Обработчик команды /start."""
     await bot.send_message(
         message.chat.id,
-        f"Привет!!!!!{message.from_user.first_name}",
+        f"Привет!!!!!!{message.from_user.first_name}",
     )
     logger.info(f'{message.from_user.username} запустил бота')
