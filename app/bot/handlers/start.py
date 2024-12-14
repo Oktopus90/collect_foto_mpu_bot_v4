@@ -19,5 +19,5 @@ async def echo_hand(message: Message) -> None:
     """Обработчик команды /start."""
     await bot.send_message(
         message.chat.id,
-        f"{message.from_user.first_name} написал: /n {message.text}",
+        f"{message.from_user.first_name} написал: \n '{message.text}'",
     )
