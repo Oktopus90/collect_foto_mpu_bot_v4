@@ -1,5 +1,6 @@
-from datebase.core.base import Base
 from sqlalchemy import Column, DateTime, func
+
+from core.db import Base
 
 
 class AbstractModelForTime(Base):

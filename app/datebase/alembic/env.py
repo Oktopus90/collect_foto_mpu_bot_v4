@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from sqlalchemy import engine_from_config, pool
 
 from core.base import Base
-from core.db import Base
+#from core.db import Base
 
 load_dotenv()
 
@@ -14,7 +14,7 @@ load_dotenv()
 # access to the values within the .ini file in use.
 config = context.config
 
-config.set_main_option('sqlalchemy.url', os.environ['DATABASE_URL'])
+config.set_main_option('sqlalchemy.url', 'sqlite:///mpu_foto.db')
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

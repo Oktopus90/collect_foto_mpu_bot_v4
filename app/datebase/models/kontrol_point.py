@@ -1,5 +1,6 @@
+from sqlalchemy import Column, Float, Integer, String
+
 from .base import AbstractModelForTime
-from sqlalchemy import BigInteger, Column, String, Integer, Float
 
 
 class KontrolPoint(AbstractModelForTime):
@@ -46,3 +47,10 @@ class KontrolPoint(AbstractModelForTime):
     photo = Column(
         String(length=255),
     )
+
+    def __repr__(self) -> str:
+        return (
+            f'{self.number=};'
+            f'{self.districte=}; {self.question=}; '
+            f'{super().__repr__()}'
+        )

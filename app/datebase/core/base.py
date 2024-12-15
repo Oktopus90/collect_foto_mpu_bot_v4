@@ -1,3 +1,3 @@
-#from models import user  # noqa
-from .db import Base  # noqa
-#from datebase.models.user import User # noqa
+from models.user import User  # noqa
+from core.db import Base  # noqa
+from models.kontrol_point import KontrolPoint # noqa
