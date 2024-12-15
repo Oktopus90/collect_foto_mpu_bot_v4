@@ -1,2 +1,2 @@
 from .user import User # noqa
-from .base import Base # noqa
+from .base import AbstractModelForTime # noqa

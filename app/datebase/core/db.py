@@ -3,7 +3,7 @@ from uuid import uuid4
 from dotenv import load_dotenv
 from sqlalchemy import Column, create_engine
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID  # noqa
-from sqlalchemy.orm import declarative_base, declared_attr
+from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
 
 load_dotenv()
 
@@ -30,4 +30,6 @@ class PreBase:
 
 Base = declarative_base(cls=PreBase)
 
-engine = create_engine("sqlite:///mpu_foto.db")
+engine = create_engine("sqlite:///app/datebase/mpu_foto.db")
+
+session = sessionmaker(autoflush=False, bind=engine)
