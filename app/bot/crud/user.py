@@ -31,3 +31,9 @@ def add_user(data: dict[str, str]) -> None:
         sess.add(user)
         logger.info(f'{user} Добавлен в БД')
         sess.commit()
+
+
+def get_user_bd_from_tg_id(tg_id: int) -> User:
+    """Поиск в БД User по tg_id."""
+    with session()as sess:
+        return sess.query(User).filter(User.telegram_id == tg_id).first()
