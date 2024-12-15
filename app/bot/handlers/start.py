@@ -1,8 +1,7 @@
+from bot.crud.user import add_user, get_user_bd_from_tg_id
 from bot.loader import bot_instance as bot
 from telebot.types import Message
 from utils.logger import get_logger
-
-from bot.crud.user import add_user, get_user_bd_from_tg_id
 
 logger = get_logger(__name__)
 
