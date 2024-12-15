@@ -4,6 +4,7 @@ from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
+
 def add_user(data: dict[str, str]) -> None:
     """Добаление пользователя в БД.
 

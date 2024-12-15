@@ -39,6 +39,3 @@ class User(AbstractModelForTime):
             f'{self.first_name=}; {self.last_name=}; '
             f'{super().__repr__()}'
         )
-
-    def __str__(self) -> str:
-        return f'{self.first_name}, {self.username}, {self.telegram_id}'
