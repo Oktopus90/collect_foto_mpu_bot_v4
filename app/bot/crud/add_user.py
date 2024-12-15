@@ -1,6 +1,8 @@
 from datebase.core.db import session
 from datebase.models.user import User
+from utils.logger import get_logger
 
+logger = get_logger(__name__)
 
 def add_user(data: dict[str, str]) -> None:
     """Добаление пользователя в БД.
@@ -18,11 +20,13 @@ def add_user(data: dict[str, str]) -> None:
 
     """
     with session() as sess:
-        sess.add(User(
+        user = User(
             username=data['username'],
             first_name=data['first_name'],
             last_name=data['last_name'],
             telegram_id=int(data['telegram_id']),
 
-        ))
+        )
+        sess.add(user)
+        logger.info(f'{user} Добавлен в БД')
         sess.commit()
