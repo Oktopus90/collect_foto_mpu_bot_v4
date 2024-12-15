@@ -5,3 +5,6 @@ docker compose -f docker-compose.local.yml up --build
 
 python -m ruff check ./app
 ruff check --fix
+
+BOT_TOKEN = 'BOT_TOKEN'
+DATABASE_URL = 'sqlite:///app/datebase/mpu_foto.db'
