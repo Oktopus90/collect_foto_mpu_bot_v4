@@ -1,3 +1,4 @@
+import os
 from uuid import uuid4
 
 from dotenv import load_dotenv
@@ -6,6 +7,8 @@ from sqlalchemy.dialects.postgresql import UUID as pg_UUID  # noqa
 from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
 
 load_dotenv()
+
+DATABASE_URL = os.environ['DATABASE_URL']
 
 
 class PreBase:
@@ -30,6 +33,6 @@ class PreBase:
 
 Base = declarative_base(cls=PreBase)
 
-engine = create_engine("sqlite:///app/datebase/mpu_foto.db")
+engine = create_engine(DATABASE_URL)
 
 session = sessionmaker(autoflush=False, bind=engine)
