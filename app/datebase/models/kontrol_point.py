@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import UUID as pg_UUID
+from sqlalchemy.orm import relationship
 
 from .base import AbstractModelForTime
 
@@ -16,6 +18,7 @@ class KontrolPoint(AbstractModelForTime):
     - discription: Описание
     - comments: Общий коментарий
     - photo: Фотография
+    - author: Автор КП
     """
 
     number = Column(
@@ -47,10 +50,18 @@ class KontrolPoint(AbstractModelForTime):
     photo = Column(
         String(length=255),
     )
+    author = relationship(
+        "User",
+        back_populates='kontrol_points',
+    )
+    author_id = Column(
+        String,
+        ForeignKey("users.unique_id"),
+    )
 
     def __repr__(self) -> str:
         return (
             f'{self.number=};'
-            f'{self.districte=}; {self.question=}; '
+            f'{self.discription=}; {self.question=}; '
             f'{super().__repr__()}'
         )

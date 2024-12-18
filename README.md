@@ -12,3 +12,4 @@ BOT_TOKEN = 'BOT_TOKEN'
 DATABASE_URL = 'sqlite:///app/datebase/mpu_foto.db'
 ```
 alembic revision --autogenerate -m 'initial'
+alembic upgrade head

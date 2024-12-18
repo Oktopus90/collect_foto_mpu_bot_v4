@@ -1,5 +1,6 @@
 from sqlalchemy import BigInteger, Column, String
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID  # noqa
+from sqlalchemy.orm import relationship
 
 from .base import AbstractModelForTime
 
@@ -13,7 +14,8 @@ class User(AbstractModelForTime):
     - last_name: Фамилия пользователя;
     - telegram_id: ID телеграма пользователя;
     - created_at: Дата и время создания;
-    - edited_at: Дата и время редактирования.
+    - edited_at: Дата и время редактирования;
+    - kontrol_points: Ссылка на КП от данного автора.
     """
 
     username = Column(
@@ -31,6 +33,10 @@ class User(AbstractModelForTime):
     telegram_id: Column[int] = Column(
         BigInteger,
         unique=True,
+    )
+    kontrol_points = relationship(
+        "KontrolPoint",
+        back_populates="author",
     )
 
     def __repr__(self) -> str:
