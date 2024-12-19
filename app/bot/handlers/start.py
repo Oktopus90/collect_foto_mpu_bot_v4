@@ -14,7 +14,7 @@ async def handle_start(message: Message) -> None:
         await bot.send_message(
             message.chat.id,
             f"С возвращением!! {user_bd.first_name}.\n"
-            f"Вы в первые здесь были {user_bd.created_at}",
+            f"Вы впервые здесь были\n{user_bd.created_at}",
         )
     else:
         data = {
