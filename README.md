@@ -9,7 +9,7 @@ ruff check --fix
 .env
 ```
 BOT_TOKEN = 'BOT_TOKEN'
-DATABASE_URL = 'sqlite:///app/datebase/mpu_foto.db'
+DATABASE_URL = 'sqlite:///app/mpu_foto.db'
 ```
 alembic revision --autogenerate -m 'initial'
 alembic upgrade head
