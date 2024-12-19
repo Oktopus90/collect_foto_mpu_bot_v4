@@ -2,7 +2,7 @@ import os
 from uuid import uuid4
 
 from dotenv import load_dotenv
-from sqlalchemy import Column, create_engine, String
+from sqlalchemy import Column, String, create_engine
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID  # noqa
 from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
 

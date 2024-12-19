@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.dialects.postgresql import UUID as pg_UUID
 from sqlalchemy.orm import relationship
 
 from .base import AbstractModelForTime
