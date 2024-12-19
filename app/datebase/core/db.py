@@ -2,7 +2,7 @@ import os
 from uuid import uuid4
 
 from dotenv import load_dotenv
-from sqlalchemy import Column, create_engine
+from sqlalchemy import Column, String, create_engine
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID  # noqa
 from sqlalchemy.orm import declarative_base, declared_attr, sessionmaker
 
@@ -28,7 +28,7 @@ class PreBase:
     def __tablename__(cls) -> str:
         return f'{cls.__name__.lower()}s'
 
-    unique_id = Column(pg_UUID(as_uuid=True), primary_key=True, default=uuid4)
+    unique_id = Column(String, primary_key=True, default=str(uuid4()))
 
 
 Base = declarative_base(cls=PreBase)

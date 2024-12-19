@@ -1,4 +1,4 @@
-from datebase.core.base import Base
+from datebase.core.db import Base
 from sqlalchemy import Column, DateTime, func
 
 
