@@ -9,21 +9,27 @@ class KontrolPoint(AbstractModelForTime):
 
     Модель содержит:
     - number: Номер
+    - district: Район
     - adres: Адрес
     - latitude: Широта
     - longitude: Долгота
-    - district: Район
     - question: Предварительный вопрос
     - discription: Описание
     - comments: Общий коментарий
-    - photo: Фотография
+    - photo_general: Фотография
+    - photos: Дополнительные фотографии
     - author: Автор КП
+    - age_category: Возрастная категория.
     """
 
     number = Column(
         Integer,
         unique=True,
         autoincrement=True,
+    )
+    district = Column(
+        String,
+        ForeignKey("districts.unique_id"),
     )
     adres = Column(
         String(length=255),
@@ -33,9 +39,6 @@ class KontrolPoint(AbstractModelForTime):
     )
     longitude = (
         Float()
-    )
-    district = Column(
-        String(length=255),
     )
     question = Column(
         String(length=255),
