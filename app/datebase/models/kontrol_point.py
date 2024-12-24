@@ -27,10 +27,6 @@ class KontrolPoint(AbstractModelForTime):
         unique=True,
         autoincrement=True,
     )
-    district = Column(
-        String,
-        ForeignKey("districts.unique_id"),
-    )
     adres = Column(
         String(length=255),
     )
@@ -52,6 +48,9 @@ class KontrolPoint(AbstractModelForTime):
     photo = Column(
         String(length=255),
     )
+    age_category = Column(
+        String(length=255),
+    )
     author = relationship(
         "User",
         back_populates='kontrol_points',
@@ -59,6 +58,14 @@ class KontrolPoint(AbstractModelForTime):
     author_id = Column(
         String,
         ForeignKey("users.unique_id"),
+    )
+    district = relationship(
+        "District",
+        back_populates='kontrol_points',
+    )
+    district_id = Column(
+        String,
+        ForeignKey("districts.unique_id"),
     )
 
     def __repr__(self) -> str:

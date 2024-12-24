@@ -20,7 +20,6 @@ class User(AbstractModelForTime):
 
     username = Column(
         String(length=255),
-        unique=True,
     )
     first_name = Column(
         String(length=255),

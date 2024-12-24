@@ -14,7 +14,6 @@ class District(AbstractModelForTime):
 
     username = Column(
         String(length=255),
-        unique=True,
     )
     kontrol_points = relationship(
         "KontrolPoint",
