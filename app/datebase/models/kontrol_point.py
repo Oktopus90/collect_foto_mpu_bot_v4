@@ -9,15 +9,17 @@ class KontrolPoint(AbstractModelForTime):
 
     Модель содержит:
     - number: Номер
+    - district: Район
     - adres: Адрес
     - latitude: Широта
     - longitude: Долгота
-    - district: Район
     - question: Предварительный вопрос
     - discription: Описание
     - comments: Общий коментарий
-    - photo: Фотография
+    - photo_general: Фотография
+    - photos: Дополнительные фотографии
     - author: Автор КП
+    - age_category: Возрастная категория.
     """
 
     number = Column(
@@ -34,9 +36,6 @@ class KontrolPoint(AbstractModelForTime):
     longitude = (
         Float()
     )
-    district = Column(
-        String(length=255),
-    )
     question = Column(
         String(length=255),
     )
@@ -49,6 +48,9 @@ class KontrolPoint(AbstractModelForTime):
     photo = Column(
         String(length=255),
     )
+    age_category = Column(
+        String(length=255),
+    )
     author = relationship(
         "User",
         back_populates='kontrol_points',
@@ -56,6 +58,14 @@ class KontrolPoint(AbstractModelForTime):
     author_id = Column(
         String,
         ForeignKey("users.unique_id"),
+    )
+    district = relationship(
+        "District",
+        back_populates='kontrol_points',
+    )
+    district_id = Column(
+        String,
+        ForeignKey("districts.unique_id"),
     )
 
     def __repr__(self) -> str:
