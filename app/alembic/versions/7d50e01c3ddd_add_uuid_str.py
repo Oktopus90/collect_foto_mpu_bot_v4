@@ -1,15 +1,15 @@
-"""initial7
+"""add_uuid_str
 
-Revision ID: aa6286dfcd33
-Revises: 61e855e57a5b
-Create Date: 2024-12-25 13:19:31.839529
+Revision ID: 7d50e01c3ddd
+Revises: aa6286dfcd33
+Create Date: 2024-12-25 14:21:16.458229
 
 """
 from typing import Sequence, Union
 
 # revision identifiers, used by Alembic.
-revision: str = 'aa6286dfcd33'
-down_revision: Union[str, None] = '61e855e57a5b'
+revision: str = '7d50e01c3ddd'
+down_revision: Union[str, None] = 'aa6286dfcd33'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
