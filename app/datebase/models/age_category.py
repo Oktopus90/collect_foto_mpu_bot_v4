@@ -4,20 +4,20 @@ from sqlalchemy.orm import relationship
 from .base import AbstractModelForTime
 
 
-class District(AbstractModelForTime):
+class AgeCategory(AbstractModelForTime):
     """Модель района.
 
     Модель содержит:
-    - name: Название района
+    - name: Название возрастной категории (1-2, 3-4 ...)
+    - color: цветовое обозначение категории
     - kontrol_points: Ссылка на КП в этом районе.
     """
 
     name = Column(
         String(length=255),
     )
-    kontrol_points = relationship(
-        "KontrolPoint",
-        back_populates="district",
+    color = Column(
+        String(length=255),
     )
 
     def __repr__(self) -> str:
