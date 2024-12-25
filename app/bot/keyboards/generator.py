@@ -1,23 +1,12 @@
-from math import ceil
-from typing import List, Optional, Tuple, TypedDict, Union
+from typing import List, TypedDict, Union
 
-from sqlalchemy.dialects.postgresql import UUID
+from bot import constants
 from telebot.types import (
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     KeyboardButton,
     ReplyKeyboardMarkup,
 )
-
-from . import constants
-
-
-NO_ITEMS_TEXT = 'Элементов нет'
-NOOP = 'noop'
-SELECT_CALLBACK_PREFIX ='select_'
-UNIQUE_ID_KEY = 'UniqueID'
-NAME_KEY = 'Name'
-BUTTONS_PER_ROW = 1
 
 
 class MenuItem(TypedDict):
@@ -38,31 +27,31 @@ async def build_menu_buttons(
             return [
                 [
                     InlineKeyboardButton(
-                        NO_ITEMS_TEXT,
-                        callback_data=NOOP,
+                        constants.NO_ITEMS_TEXT,
+                        callback_data=constants.NOOP,
                     ),
                 ],
             ]
-        return [[KeyboardButton(NO_ITEMS_TEXT)]]
+        return [[KeyboardButton(constants.NO_ITEMS_TEXT)]]
 
     def create_button(
         item: MenuItem,
     ) -> Union[InlineKeyboardButton, KeyboardButton]:
         if is_inline:
             callback_data = (
-                f'{SELECT_CALLBACK_PREFIX}'
-                f'{item[UNIQUE_ID_KEY]}'
+                f'{constants.SELECT_CALLBACK_PREFIX}'
+                f'{item[constants.UNIQUE_ID_KEY]}'
             )
             return InlineKeyboardButton(
-                text=item[NAME_KEY],
+                text=item[constants.NAME_KEY],
                 callback_data=callback_data,
             )
-        return KeyboardButton(item[NAME_KEY])
+        return KeyboardButton(item[constants.NAME_KEY])
 
     buttons = [create_button(item) for item in accessible_items]
     return [
-        buttons[i: i + BUTTONS_PER_ROW]
-        for i in range(0, len(buttons), BUTTONS_PER_ROW)
+        buttons[i: i + constants.BUTTONS_PER_ROW]
+        for i in range(0, len(buttons), constants.BUTTONS_PER_ROW)
     ]
 
 

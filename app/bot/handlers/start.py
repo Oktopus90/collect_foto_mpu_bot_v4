@@ -2,8 +2,10 @@ from bot.crud.user import add_user, get_user_bd_from_tg_id
 from bot.loader import bot_instance as bot
 from telebot.types import Message
 from utils.logger import get_logger
-
+from bot.keyboards.generator import build_keyboard
+from bot import constants
 logger = get_logger(__name__)
+
 
 
 @bot.message_handler(commands=['start'])
@@ -35,7 +37,9 @@ async def handle_start(message: Message) -> None:
 @bot.message_handler(content_types=['text'])
 async def echo_hand(message: Message) -> None:
     """Эхо чать."""
+    test = await build_keyboard(menu_items=constants.TEST_MENY, is_inline=True)
     await bot.send_message(
         message.chat.id,
         f"{message.from_user.first_name} написал: \n '{message.text}'",
+        reply_markup=test,
     )
