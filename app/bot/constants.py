@@ -6,8 +6,8 @@ NAME_KEY = 'Name'
 BUTTONS_PER_ROW = 2
 
 WELCOM_MENY = [{
-    UNIQUE_ID_KEY: 'Регистрация',
-    NAME_KEY: 'Регистрация',
+    UNIQUE_ID_KEY: 'Отправить данные КП',
+    NAME_KEY: 'Отправить данные КП',
 },
 {
     UNIQUE_ID_KEY: 'Часто задаваемые вопросы',

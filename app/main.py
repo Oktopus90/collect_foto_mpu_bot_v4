@@ -1,4 +1,4 @@
-import bot.handlers.start  # noqa
+import bot.handlers  # noqa
 from bot.loader import bot_instance
 from utils.logger import get_logger
 import logging
