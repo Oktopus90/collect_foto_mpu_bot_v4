@@ -20,7 +20,7 @@ async def build_menu_buttons(
     menu_items: List[MenuItem],
     is_inline: bool = False,
 ) -> list:
-    """Создаёт список кнопок меню с учётом пагинации и доступности элементов."""
+    """Создаёт список кнопок меню."""
     accessible_items = menu_items
     if not accessible_items:
         if is_inline:
@@ -59,7 +59,7 @@ async def build_keyboard(
     menu_items: List[MenuItem],
     is_inline: bool = False,
 ) -> Union[ReplyKeyboardMarkup, InlineKeyboardMarkup]:
-    """Создает клавиатуру (Reply или Inline) с поддержкой иерархии и пагинации."""
+    """Создает клавиатуру (Reply или Inline)."""
     keyboard = await build_menu_buttons(
         menu_items,
         is_inline,
