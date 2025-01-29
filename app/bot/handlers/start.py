@@ -1,4 +1,6 @@
+from bot import constants
 from bot.crud.user import add_user, get_user_bd_from_tg_id
+from bot.keyboards.generator import build_keyboard
 from bot.loader import bot_instance as bot
 from telebot.types import Message
 from utils.logger import get_logger
@@ -29,6 +31,14 @@ async def handle_start(message: Message) -> None:
             f"Приветствуем!! {message.from_user.first_name}.\n"
             f"Вы здесь впервые",
         )
+    await bot.send_message(
+        message.chat.id,
+        "Ваши дальнейшие действия",
+        reply_markup=await build_keyboard(
+            menu_items=constants.WELCOM_MENY,
+            is_inline=False,
+        ),
+    )
     logger.info(f'{message.from_user.username} запустил бота')
 
 
