@@ -14,6 +14,12 @@ WELCOM_MENY = [{
     NAME_KEY: 'Часто задаваемые вопросы',
 }]
 
+SEND_KOORD = [{
+    UNIQUE_ID_KEY: 'Отправить Координаты',
+    NAME_KEY: 'Отправить Координаты',
+},
+]
+
 TEST_MENY =[{
     UNIQUE_ID_KEY: 1,
     NAME_KEY: '1',
