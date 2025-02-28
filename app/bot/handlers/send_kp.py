@@ -5,6 +5,7 @@ from bot.loader import bot_instance as bot
 from telebot.types import Message, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
 from utils.logger import get_logger
 
+
 logger = get_logger(__name__)
 START_BUTTON_SEND_KP = constants.WELCOM_MENY[0]['Name']
 
@@ -124,13 +125,13 @@ async def comments_send_kp(message: Message) -> None:
 
 @bot.message_handler(content_types=['photo'])
 async def send_photo(message: Message) -> None:
-    file_info = bot.get_file(message.document)[-1]
-    print(f"file_info {file_info}")
-    downloaded_file = bot.download_file(file_info)
-    save_path = 'file.jpg'  # сохраняем файл с его исходным именем
+    print(message)
+    file_info = await bot.get_file(message.photo[-1].file_id)
+    downloaded_file = await bot.download_file(file_info.file_path)
+    save_path = f'file{message.photo[-1].file_id}.jpg'  # сохраняем файл с его исходным именем
     with open(save_path, 'wb') as new_file:
         new_file.write(downloaded_file)
-    bot.reply_to(message, 'Файл сохранен.')
+    await bot.reply_to(message, 'Файл сохранен.')
 
 
 @bot.message_handler(func=lambda message: chek_state(message, 'photos'))
