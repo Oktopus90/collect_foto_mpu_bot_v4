@@ -49,3 +49,7 @@ async def echo_hand(message: Message) -> None:
         message.chat.id,
         f"{message.from_user.first_name} написал: \n '{message.text}'",
     )
+    await bot.send_message(
+        message.chat.id,
+        "Что-то пошло не так, напишите /start",
+    )

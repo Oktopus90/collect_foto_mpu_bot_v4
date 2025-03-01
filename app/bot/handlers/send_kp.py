@@ -1,8 +1,15 @@
+import os
+
 from bot import constants
-from bot.keyboards.generator import build_keyboard
+from bot.crud.kontrol_point import add_kontrol_point
+from bot.crud.user import get_user_bd_from_tg_id
 from bot.keyboards.geopos import keyboard_geo
+from bot.keyboards.utils import keyboard_next, keyboard_ok
 from bot.loader import bot_instance as bot
-from telebot.types import Message, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
+from telebot.types import (
+    Message,
+    ReplyKeyboardRemove,
+)
 from utils.logger import get_logger
 
 
@@ -25,14 +32,17 @@ add_data = {
     'longitude': '',
     'question': '',
     'comments': '',
-    'photos': '',
+    'photo': '',
+    'discription': 'Нет',
+    'age_category': 1,
+    'district': 1,
  }
 
 
 def chek_state(message: Message, chek_state: str) -> bool:
     """Проверка сотсояния и id."""
-    print(">>>>>>>>>>", user_state.get(message.chat.id, 0))
-    return user_state.get(message.chat.id, 0) == chek_state
+    state = user_state.get(message.chat.id, 0) == chek_state
+    return state
 
 
 @bot.message_handler(func=lambda message: message.text == START_BUTTON_SEND_KP)
@@ -42,6 +52,7 @@ async def start_send_kp(message: Message) -> None:
         message.chat.id,
         "Приступаем к сбору данных",
     )
+    add_data
     user_state[message.chat.id] = states[0]
 
     await bot.send_message(
@@ -55,28 +66,39 @@ async def start_send_kp(message: Message) -> None:
 @bot.message_handler(content_types=["location"])
 async def add_location(message: Message) -> None:
     """Запись координат."""
-    if message.location is not None:
-        add_data['latitude'] = message.location.latitude
-        add_data['longitude'] = message.location.longitude
+    if chek_state(message, 'coord'):
+        if message.location is not None:
+            add_data['latitude'] = message.location.latitude
+            add_data['longitude'] = message.location.longitude
+            await bot.send_message(
+                message.chat.id,
+                f"Ваши координаты: \n"
+                f"latitude: {add_data['latitude']}\n"
+                f"longitude: {add_data['longitude']}",
+                reply_markup=ReplyKeyboardRemove(),
+            )
+            user_state[message.chat.id] = states[2]
+            await bot.send_message(
+                message.chat.id,
+                "Введите адрес.",
+            )
+    else:
         await bot.send_message(
             message.chat.id,
-            f"Ваши координаты: \n"
-            f"latitude: {add_data['latitude']}\n"
-            f"longitude: {add_data['longitude']}",
+            "Что-то пошло не так. Перезапустите Бота\n Напишите /start",
             reply_markup=ReplyKeyboardRemove(),
-        )
-        user_state[message.chat.id] = states[2]
-        await bot.send_message(
-            message.chat.id,
-            "Введите адрес.",
         )
 
 
 @bot.message_handler(func=lambda message: chek_state(message, 'coord'))
 async def coord_send_kp(message: Message) -> None:
     """Получение координат."""
-    if message.text == "Пропустить":
+    if message.text.lower() == "пропустить":
         user_state[message.chat.id] = states[2]
+        await bot.send_message(
+            message.chat.id,
+            "Введите адрес.",
+        )
     else:
         await bot.send_message(
             message.chat.id,
@@ -123,24 +145,72 @@ async def comments_send_kp(message: Message) -> None:
             reply_markup=ReplyKeyboardRemove(),
         )
 
+
 @bot.message_handler(content_types=['photo'])
 async def send_photo(message: Message) -> None:
-    print(message)
-    file_info = await bot.get_file(message.photo[-1].file_id)
-    downloaded_file = await bot.download_file(file_info.file_path)
-    save_path = f'file{message.photo[-1].file_id}.jpg'  # сохраняем файл с его исходным именем
-    with open(save_path, 'wb') as new_file:
-        new_file.write(downloaded_file)
-    await bot.reply_to(message, 'Файл сохранен.')
+    """Сохранение фотографий."""
+    if chek_state(message, 'photos'):
+        file_info = await bot.get_file(message.photo[-1].file_id)
+        downloaded_file = await bot.download_file(file_info.file_path)
+        path_tmp_user = f"tmp/{message.chat.id}"
+        if not os.path.isdir(path_tmp_user):
+            os.mkdir(path_tmp_user)
+
+        save_path = f'{path_tmp_user}/file_{message.photo[-1].file_id}.jpg'
+
+        with open(save_path, 'wb') as new_file:
+            new_file.write(downloaded_file)
+        count_photo = len(os.listdir(path_tmp_user))
+        await bot.send_message(
+            message.chat.id,
+            f'Было отправлено {count_photo}',
+            reply_markup=keyboard_next,
+        )
+        add_data['photo'] = count_photo
+    else:
+        await bot.send_message(
+            message.chat.id,
+            "Что-то пошло не так. Перезапустите Бота\n Напишите /start",
+            reply_markup=ReplyKeyboardRemove(),
+        )
 
 
 @bot.message_handler(func=lambda message: chek_state(message, 'photos'))
 async def photos_send_kp(message: Message) -> None:
     """Ожидание фотографий."""
-    if message.text == "Пропустить":
+    if message.text == "Пропустить" or message.text == "Завершить отправку":
         user_state[message.chat.id] = states[6]
+        await bot.send_message(
+            message.chat.id,
+            "Нажмите ОК.",
+            reply_markup=keyboard_ok,
+        )
     else:
         await bot.send_message(
             message.chat.id,
             "Отправьте фотографии",
         )
+
+
+@bot.message_handler(func=lambda message: chek_state(message, 'final'))
+async def final_send_kp(message: Message) -> None:
+    """Завершение отправки КП."""
+    await bot.send_message(
+        message.chat.id,
+        "Теперь проверим отправленные данные.",
+        reply_markup=ReplyKeyboardRemove()
+    )
+    add_data['author'] = get_user_bd_from_tg_id(message.from_user.id)
+    s_msg = (f"Автор: \t{add_data['author'].first_name}\n"
+             f"Адрес: \t{add_data['adres']}\n"
+             f"Вопрос: \t{add_data['question']}\n"
+             f"Коммент: \t{add_data['comments']}\n"
+             f"Щирота: \t{add_data['latitude']}\n"
+             f"Долгота: \t{add_data['longitude']}\n"
+             f"Кол-ов фото: \t{add_data['photo']}\n")
+    await bot.send_message(
+        message.chat.id,
+        s_msg,
+        reply_markup=keyboard_ok,
+    )
+    add_kontrol_point(add_data)
