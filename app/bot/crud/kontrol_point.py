@@ -28,13 +28,6 @@ def add_kontrol_point(data: dict[str, str]) -> None:
         None.
 
     """
-    data['district'] = District(
-        name="Тестовый район",
-    )
-    data['age_category'] = AgeCategory(
-        name="Нет",
-        color="нет",
-    )
     with session() as sess:
         kp = KontrolPoint(
             adres=data['adres'],

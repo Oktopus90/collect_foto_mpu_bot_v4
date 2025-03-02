@@ -1,6 +1,7 @@
 import os
 
 from bot import constants
+from bot.keyboards.generator import build_keyboard
 from bot.crud.kontrol_point import add_kontrol_point
 from bot.crud.user import get_user_bd_from_tg_id
 from bot.keyboards.geopos import keyboard_geo
@@ -11,7 +12,6 @@ from telebot.types import (
     ReplyKeyboardRemove,
 )
 from utils.logger import get_logger
-
 
 logger = get_logger(__name__)
 START_BUTTON_SEND_KP = constants.WELCOM_MENY[0]['Name']
@@ -28,21 +28,20 @@ states = [
 ]
 add_data = {
     'adres': '',
-    'latitude': '',
-    'longitude': '',
+    'latitude': 0,
+    'longitude': 0,
     'question': '',
     'comments': '',
     'photo': '',
-    'discription': 'Нет',
-    'age_category': 1,
-    'district': 1,
+    'discription': 'Здесь будет описание',
+    'age_category': 'Здесь будет возрастная категория',
+    'district': 'Здесь будет район',
  }
 
 
 def chek_state(message: Message, chek_state: str) -> bool:
     """Проверка сотсояния и id."""
-    state = user_state.get(message.chat.id, 0) == chek_state
-    return state
+    return user_state.get(message.chat.id, 0) == chek_state
 
 
 @bot.message_handler(func=lambda message: message.text == START_BUTTON_SEND_KP)
@@ -142,7 +141,7 @@ async def comments_send_kp(message: Message) -> None:
         await bot.send_message(
             message.chat.id,
             "Пришлите фотографии",
-            reply_markup=ReplyKeyboardRemove(),
+            reply_markup=keyboard_next,
         )
 
 
@@ -178,12 +177,12 @@ async def send_photo(message: Message) -> None:
 @bot.message_handler(func=lambda message: chek_state(message, 'photos'))
 async def photos_send_kp(message: Message) -> None:
     """Ожидание фотографий."""
-    if message.text == "Пропустить" or message.text == "Завершить отправку":
+    if message.text == "Пропустить" or message.text == "Далее":
         user_state[message.chat.id] = states[6]
         await bot.send_message(
             message.chat.id,
-            "Нажмите ОК.",
-            reply_markup=keyboard_ok,
+            f"Отправка завершена. Всего было отправлено {add_data['photo']}",
+            reply_markup=keyboard_next,
         )
     else:
         await bot.send_message(
@@ -195,22 +194,48 @@ async def photos_send_kp(message: Message) -> None:
 @bot.message_handler(func=lambda message: chek_state(message, 'final'))
 async def final_send_kp(message: Message) -> None:
     """Завершение отправки КП."""
-    await bot.send_message(
-        message.chat.id,
-        "Теперь проверим отправленные данные.",
-        reply_markup=ReplyKeyboardRemove()
-    )
-    add_data['author'] = get_user_bd_from_tg_id(message.from_user.id)
-    s_msg = (f"Автор: \t{add_data['author'].first_name}\n"
-             f"Адрес: \t{add_data['adres']}\n"
-             f"Вопрос: \t{add_data['question']}\n"
-             f"Коммент: \t{add_data['comments']}\n"
-             f"Щирота: \t{add_data['latitude']}\n"
-             f"Долгота: \t{add_data['longitude']}\n"
-             f"Кол-ов фото: \t{add_data['photo']}\n")
-    await bot.send_message(
-        message.chat.id,
-        s_msg,
-        reply_markup=keyboard_ok,
-    )
-    add_kontrol_point(add_data)
+    if message.text == 'Далее':
+        await bot.send_message(
+            message.chat.id,
+            "Теперь проверим отправленные данные.",
+            reply_markup=ReplyKeyboardRemove(),
+        )
+        add_data['author'] = get_user_bd_from_tg_id(message.from_user.id)
+        s_msg = (f"Автор: \t{add_data['author'].first_name}\n"
+                 f"Адрес: \t{add_data['adres']}\n"
+                 f"Вопрос: \t{add_data['question']}\n"
+                 f"Коммент: \t{add_data['comments']}\n"
+                 f"Щирота: \t{add_data['latitude']}\n"
+                 f"Долгота: \t{add_data['longitude']}\n"
+                 f"Кол-ов фото: \t{add_data['photo']}\n")
+        await bot.send_message(
+            message.chat.id,
+            s_msg,
+            reply_markup=keyboard_ok,
+        )
+    elif message.text == 'Ok':
+        add_kontrol_point(add_data)
+        user_state[message.chat.id] = 'Нет'
+        await bot.send_message(
+            message.chat.id,
+            'Завершили отправку, добавлено КП № ...',
+            reply_markup=await build_keyboard(
+                menu_items=constants.WELCOM_MENY,
+                is_inline=False,
+            ),
+        )
+    elif message.text == 'Не Ок':
+        await bot.send_message(
+            message.chat.id,
+            "Еще раз отправьте данные по КП",
+            reply_markup=await build_keyboard(
+                menu_items=constants.WELCOM_MENY,
+                is_inline=False,
+            ),
+        )
+    else:
+        await bot.send_message(
+            message.chat.id,
+            "Нажми на кнопку",
+            reply_markup=keyboard_ok,
+        )
