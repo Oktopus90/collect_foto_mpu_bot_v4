@@ -2,7 +2,7 @@ import os
 
 from bot import constants
 from bot.keyboards.generator import build_keyboard
-from bot.crud.kontrol_point import add_kontrol_point
+from bot.crud.kontrol_point import add_kontrol_point, get_next_number_kp
 from bot.crud.user import get_user_bd_from_tg_id
 from bot.keyboards.geopos import keyboard_geo
 from bot.keyboards.utils import keyboard_next, keyboard_ok
@@ -12,6 +12,7 @@ from telebot.types import (
     ReplyKeyboardRemove,
 )
 from utils.logger import get_logger
+from utils.save_photo import save_photo
 
 logger = get_logger(__name__)
 START_BUTTON_SEND_KP = constants.WELCOM_MENY[0]['Name']
@@ -27,6 +28,7 @@ states = [
     'final',
 ]
 add_data = {
+    'number': 0,
     'adres': '',
     'latitude': 0,
     'longitude': 0,
@@ -201,7 +203,9 @@ async def final_send_kp(message: Message) -> None:
             reply_markup=ReplyKeyboardRemove(),
         )
         add_data['author'] = get_user_bd_from_tg_id(message.from_user.id)
-        s_msg = (f"Автор: \t{add_data['author'].first_name}\n"
+        add_data['number'] = get_next_number_kp()
+        s_msg = (f"Номер_кп: \t{add_data['number']}\n"
+                 f"Автор: \t{add_data['author'].first_name}\n"
                  f"Адрес: \t{add_data['adres']}\n"
                  f"Вопрос: \t{add_data['question']}\n"
                  f"Коммент: \t{add_data['comments']}\n"
@@ -214,11 +218,13 @@ async def final_send_kp(message: Message) -> None:
             reply_markup=keyboard_ok,
         )
     elif message.text == 'Ok':
+        save_photo(message.chat.id, add_data['number'])
         add_kontrol_point(add_data)
         user_state[message.chat.id] = 'Нет'
+        number = add_data['number']
         await bot.send_message(
             message.chat.id,
-            'Завершили отправку, добавлено КП № ...',
+            f'Завершили отправку, добавлено КП №{number}',
             reply_markup=await build_keyboard(
                 menu_items=constants.WELCOM_MENY,
                 is_inline=False,

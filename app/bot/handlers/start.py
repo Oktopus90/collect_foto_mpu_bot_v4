@@ -4,6 +4,8 @@ from bot.keyboards.generator import build_keyboard
 from bot.loader import bot_instance as bot
 from telebot.types import Message
 from utils.logger import get_logger
+from utils.save_photo import save_photo
+from bot.crud.kontrol_point import get_next_number_kp
 
 logger = get_logger(__name__)
 
@@ -53,3 +55,4 @@ async def echo_hand(message: Message) -> None:
         message.chat.id,
         "Что-то пошло не так, напишите /start",
     )
+    get_next_number_kp()
