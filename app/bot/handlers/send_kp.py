@@ -12,7 +12,7 @@ from telebot.types import (
     ReplyKeyboardRemove,
 )
 from utils.logger import get_logger
-from utils.save_photo import save_photo
+from utils.save_photo import save_photo, remove_tmp_photo
 
 logger = get_logger(__name__)
 START_BUTTON_SEND_KP = constants.WELCOM_MENY[0]['Name']
@@ -27,6 +27,7 @@ states = [
     'photos',
     'final',
 ]
+
 add_data = {
     'number': 0,
     'adres': '',
@@ -53,8 +54,13 @@ async def start_send_kp(message: Message) -> None:
         message.chat.id,
         "Приступаем к сбору данных",
     )
-    add_data
+    for elem in add_data:
+        add_data[elem] = 0
     user_state[message.chat.id] = states[0]
+    path_tmp_user = f"tmp/{message.chat.id}"
+    if not os.path.isdir(path_tmp_user):
+        os.mkdir(path_tmp_user)
+    remove_tmp_photo(message.chat.id)
 
     await bot.send_message(
         message.chat.id,
@@ -200,7 +206,6 @@ async def final_send_kp(message: Message) -> None:
         await bot.send_message(
             message.chat.id,
             "Теперь проверим отправленные данные.",
-            reply_markup=ReplyKeyboardRemove(),
         )
         add_data['author'] = get_user_bd_from_tg_id(message.from_user.id)
         add_data['number'] = get_next_number_kp()
@@ -218,8 +223,8 @@ async def final_send_kp(message: Message) -> None:
             reply_markup=keyboard_ok,
         )
     elif message.text == 'Ok':
-        save_photo(message.chat.id, add_data['number'])
         add_kontrol_point(add_data)
+        save_photo(message.chat.id, add_data['number'])
         user_state[message.chat.id] = 'Нет'
         number = add_data['number']
         await bot.send_message(
