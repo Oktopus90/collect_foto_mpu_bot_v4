@@ -58,3 +58,9 @@ def get_next_number_kp() -> int:
             KontrolPoint.created_at,
         ).all()[-1]
         return obj.number + 1
+
+
+def get_kp_for_author(author: User) -> list[KontrolPoint]:
+    """Список всех КП автора."""
+    with session() as sess:
+        return sess.query(KontrolPoint).filter(KontrolPoint.author == author).all()

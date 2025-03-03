@@ -1,5 +1,4 @@
 import os
-import shutil
 
 
 def save_photo(chat_id: str, number_kp: int) -> int:

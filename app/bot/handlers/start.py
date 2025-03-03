@@ -4,8 +4,7 @@ from bot.keyboards.generator import build_keyboard
 from bot.loader import bot_instance as bot
 from telebot.types import Message
 from utils.logger import get_logger
-from utils.save_photo import save_photo
-from bot.crud.kontrol_point import get_next_number_kp
+from utils.upload_kp import save_list_kp
 
 logger = get_logger(__name__)
 
@@ -44,6 +43,19 @@ async def handle_start(message: Message) -> None:
     logger.info(f'{message.from_user.username} запустил бота')
 
 
+@bot.message_handler(commands=['csv'])
+async def gen_csv_handler(message: Message) -> None:
+    """Генератор CSV."""
+    path_csv = save_list_kp(message.chat.id)
+    await bot.send_message(
+        message.chat.id,
+        "вы попросили сгенерировать CSV, получайте",
+    )
+    with open(path_csv, 'rb') as f:
+        await bot.send_document(message.chat.id, f)
+
+
+
 @bot.message_handler(content_types=['text'])
 async def echo_hand(message: Message) -> None:
     """Эхо чать."""
@@ -55,4 +67,4 @@ async def echo_hand(message: Message) -> None:
         message.chat.id,
         "Что-то пошло не так, напишите /start",
     )
-    get_next_number_kp()
+    save_list_kp(message.chat.id)
