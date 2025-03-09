@@ -11,6 +11,7 @@ from telebot.types import (
     Message,
     ReplyKeyboardRemove,
 )
+from utils.additional_functions import enshure_dir
 from utils.logger import get_logger
 from utils.save_photo import remove_tmp_photo, save_photo
 
@@ -58,10 +59,7 @@ async def start_send_kp(message: Message) -> None:
         add_data[elem] = 0
     user_state[message.chat.id] = states[0]
     path_tmp_user = f"tmp/{message.chat.id}"
-    if not os.path.isdir("tmp"):
-        os.mkdir("tmp")
-    if not os.path.isdir(path_tmp_user):
-        os.mkdir(path_tmp_user)
+    enshure_dir(path_tmp_user)
     remove_tmp_photo(message.chat.id)
 
     await bot.send_message(
