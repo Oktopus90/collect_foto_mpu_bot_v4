@@ -5,7 +5,7 @@ from bot.loader import bot_instance as bot
 from telebot.types import Message
 from utils.logger import get_logger
 from utils.upload_kp import save_list_kp
-
+from utils.save_photo import upload_folder_to_yadisk
 logger = get_logger(__name__)
 
 
@@ -67,4 +67,4 @@ async def echo_hand(message: Message) -> None:
         message.chat.id,
         "Что-то пошло не так, напишите /start",
     )
-    save_list_kp(message.chat.id)
+    print(upload_folder_to_yadisk('photo/781984158'))
