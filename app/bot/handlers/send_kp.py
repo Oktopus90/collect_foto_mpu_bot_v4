@@ -1,9 +1,9 @@
 import os
 
 from bot import constants
-from bot.keyboards.generator import build_keyboard
 from bot.crud.kontrol_point import add_kontrol_point, get_next_number_kp
 from bot.crud.user import get_user_bd_from_tg_id
+from bot.keyboards.generator import build_keyboard
 from bot.keyboards.geopos import keyboard_geo
 from bot.keyboards.utils import keyboard_next, keyboard_ok
 from bot.loader import bot_instance as bot
@@ -11,8 +11,9 @@ from telebot.types import (
     Message,
     ReplyKeyboardRemove,
 )
+from utils.additional_functions import enshure_dir
 from utils.logger import get_logger
-from utils.save_photo import save_photo, remove_tmp_photo
+from utils.save_photo import remove_tmp_photo, save_photo
 
 logger = get_logger(__name__)
 START_BUTTON_SEND_KP = constants.WELCOM_MENY[0]['Name']
@@ -58,8 +59,7 @@ async def start_send_kp(message: Message) -> None:
         add_data[elem] = 0
     user_state[message.chat.id] = states[0]
     path_tmp_user = f"tmp/{message.chat.id}"
-    if not os.path.isdir(path_tmp_user):
-        os.mkdir(path_tmp_user)
+    enshure_dir(path_tmp_user)
     remove_tmp_photo(message.chat.id)
 
     await bot.send_message(
