@@ -1,4 +1,4 @@
-from telebot.types import Message, ReplyKeyboardRemove, ReplyKeyboardMarkup, KeyboardButton
+from telebot.types import KeyboardButton, ReplyKeyboardMarkup
 
 keyboard_ok = ReplyKeyboardMarkup(row_width=1, resize_keyboard=True)
 button_ok = KeyboardButton(
@@ -16,4 +16,3 @@ button_next = KeyboardButton(
 )
 
 keyboard_next.add(button_next)
-

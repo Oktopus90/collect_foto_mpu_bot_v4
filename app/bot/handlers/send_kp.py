@@ -1,5 +1,6 @@
 import os
 
+import anyio
 from bot import constants
 from bot.crud.kontrol_point import add_kontrol_point, get_next_number_kp
 from bot.crud.user import get_user_bd_from_tg_id
@@ -165,8 +166,8 @@ async def send_photo(message: Message) -> None:
 
         save_path = f'{path_tmp_user}/file_{message.photo[-1].file_id}.jpg'
 
-        with open(save_path, 'wb') as new_file:
-            new_file.write(downloaded_file)
+        async with await anyio.open_file(save_path, 'wb') as new_file:
+            await new_file.write(downloaded_file)
         count_photo = len(os.listdir(path_tmp_user))
         await bot.send_message(
             message.chat.id,

@@ -1,7 +1,5 @@
 from datebase.core.db import session
 from datebase.models.kontrol_point import KontrolPoint
-from datebase.models.age_category import AgeCategory
-from datebase.models.district import District
 from datebase.models.user import User
 from utils.logger import get_logger
 
@@ -63,4 +61,6 @@ def get_next_number_kp() -> int:
 def get_kp_for_author(author: User) -> list[KontrolPoint]:
     """Список всех КП автора."""
     with session() as sess:
-        return sess.query(KontrolPoint).filter(KontrolPoint.author == author).all()
+        return sess.query(KontrolPoint).filter(
+            KontrolPoint.author == author,
+        ).all()

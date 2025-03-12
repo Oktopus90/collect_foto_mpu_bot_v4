@@ -1,11 +1,13 @@
+import anyio
 from bot import constants
 from bot.crud.user import add_user, get_user_bd_from_tg_id
 from bot.keyboards.generator import build_keyboard
 from bot.loader import bot_instance as bot
 from telebot.types import Message
 from utils.logger import get_logger
-from utils.upload_kp import save_list_kp
 from utils.save_photo import upload_folder_to_yadisk
+from utils.upload_kp import save_list_kp
+
 logger = get_logger(__name__)
 
 
@@ -51,9 +53,8 @@ async def gen_csv_handler(message: Message) -> None:
         message.chat.id,
         "вы попросили сгенерировать CSV, получайте",
     )
-    with open(path_csv, 'rb') as f:
+    async with await anyio.open_file(path_csv, 'rb') as f:
         await bot.send_document(message.chat.id, f)
-
 
 
 @bot.message_handler(content_types=['text'])

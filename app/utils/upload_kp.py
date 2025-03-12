@@ -43,4 +43,3 @@ def save_list_kp(chat_id: int) -> str:
             }
             file_writer.writerow(write_obj)
     return f'tmp/{author.username}.csv'
-
