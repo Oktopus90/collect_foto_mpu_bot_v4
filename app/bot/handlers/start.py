@@ -1,9 +1,12 @@
+import anyio
 from bot import constants
 from bot.crud.user import add_user, get_user_bd_from_tg_id
 from bot.keyboards.generator import build_keyboard
 from bot.loader import bot_instance as bot
 from telebot.types import Message
 from utils.logger import get_logger
+from utils.save_photo import upload_folder_to_yadisk
+from utils.upload_kp import save_list_kp
 
 logger = get_logger(__name__)
 
@@ -42,6 +45,18 @@ async def handle_start(message: Message) -> None:
     logger.info(f'{message.from_user.username} запустил бота')
 
 
+@bot.message_handler(commands=['csv'])
+async def gen_csv_handler(message: Message) -> None:
+    """Генератор CSV."""
+    path_csv = save_list_kp(message.chat.id)
+    await bot.send_message(
+        message.chat.id,
+        "вы попросили сгенерировать CSV, получайте",
+    )
+    async with await anyio.open_file(path_csv, 'rb') as f:
+        await bot.send_document(message.chat.id, f)
+
+
 @bot.message_handler(content_types=['text'])
 async def echo_hand(message: Message) -> None:
     """Эхо чать."""
@@ -49,3 +64,8 @@ async def echo_hand(message: Message) -> None:
         message.chat.id,
         f"{message.from_user.first_name} написал: \n '{message.text}'",
     )
+    await bot.send_message(
+        message.chat.id,
+        "Что-то пошло не так, напишите /start",
+    )
+    print(upload_folder_to_yadisk('photo/781984158'))
