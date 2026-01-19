@@ -1,13 +1,13 @@
 import csv
 
-from bot.crud.kontrol_point import get_kp_for_author
+from bot.crud.kontrol_point import get_kp_for_author, get_all_kp
 from bot.crud.user import get_user_bd_from_tg_id
 
 
 def save_list_kp(chat_id: int) -> str:
     """Сохраняет csv с КП."""
     author = get_user_bd_from_tg_id(chat_id)
-    list_kp = get_kp_for_author(author)
+    list_kp = get_all_kp()
     with open(
         f'tmp/{author.username}.csv',
         mode="w",
@@ -22,10 +22,11 @@ def save_list_kp(chat_id: int) -> str:
             "question",
             "photo",
             'author',
+            'date_create',
         ]
         file_writer = csv.DictWriter(
             w_file,
-            delimiter=",",
+            delimiter=";",
             lineterminator="\r",
             fieldnames=names,
         )
@@ -39,7 +40,8 @@ def save_list_kp(chat_id: int) -> str:
                 "comments": kp.comments,
                 "question": kp.question,
                 "photo": kp.photo,
-                "author": author.username,
+                "author": kp.author.username,
+                "date_create": kp.created_at,
             }
             file_writer.writerow(write_obj)
     return f'tmp/{author.username}.csv'

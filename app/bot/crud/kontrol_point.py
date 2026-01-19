@@ -64,3 +64,12 @@ def get_kp_for_author(author: User) -> list[KontrolPoint]:
         return sess.query(KontrolPoint).filter(
             KontrolPoint.author == author,
         ).all()
+
+
+def get_all_kp() -> list[KontrolPoint]:
+    """Список всех КП."""
+    with session() as sess:
+        result = sess.query(KontrolPoint).all()
+        for kp in result:
+            kp.author
+        return result
